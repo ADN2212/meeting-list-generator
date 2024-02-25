@@ -3,23 +3,29 @@
   "name": "Random Meeting List Generator",
   "description": "A google chrome extension to create sorting lists for meetings made in Google Meet.",
   "version": "1.0",
-  "permissions": ["activeTab", "scripting", "tabs"],
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "tabs"
+    //"http://*/",
+    //"https://*/"
+  ],
   "action": {
-    "default_popup": "MainGUI.html",//Esta es la GUI de la extencion.
+    "default_popup": "MainGUI.html", //Esta es la GUI de la extencion.
     "default_icon": "hi_icon.png"
   },
-  //Estos son los files que se usan para manipular el DOM de las paginas en las que estemos.
-  "content_scripts": [
-  {
-    "js": ["scripts/content.js"], //["contentScript.js"],
-    "css": [
-      "styles/mainGUIStyles.css"
-    ],
-    "matches": ["<all_urls>"]
-    }
-  ],
 
   "background": {
     "service_worker": "background.js"
-  }
+  },
+
+  //Estos son los files que se usan para manipular el DOM de las paginas en las que estemos.
+  "content_scripts": [
+    {
+      "js": ["contentScript.js"],
+      "css": ["styles/mainGUIStyles.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+
 }
