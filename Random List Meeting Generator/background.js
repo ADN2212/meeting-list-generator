@@ -49,7 +49,6 @@
 // chrome.tabs.onUpdated.addListener(async (tabID, tab) => {
 //   //chrome.tabs.executeScript(tabID, { file: "content.js" });
 
-
 //   let languaje = await chrome.tabs.detectLanguage()
 
 //   console.log(languaje == "")
@@ -61,13 +60,11 @@
 //   // });
 // });
 
-
 // chrome.browserAction.onClicked.addListener(() => {
 
 //   console.log("Wey")
 
 // })
-
 
 // chrome.tabs.query({active: true}, function(tabs) {
 //   var tabId = tabs[0].id;
@@ -76,33 +73,44 @@
 //   });
 // });
 
+// function injectedFunction() {
+//   document.body.style.backgroundColor = "red";
+// }
 
+// function getCurrentUrl() {
+//   //return window.location.href
+//   console.log(window.location.href)//Esto no es posible e todas las paginas.
+//   //console.log("Hola")
+// }
 
+// chrome.tabs.onUpdated.addListener((tabID, tab) => {
+//   console.log(tabID)
+//   chrome.scripting.executeScript({
+//     target : {tabId : tabID},
+//     func : getCurrentUrl,//esta funcion se ejecutara cuando suceda el evento.
+//   });
+// });
 
-function injectedFunction() {
-  document.body.style.backgroundColor = "red";
-}
+let gmRegex = /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}/;
 
+chrome.tabs.onUpdated.addListener((tabId, tab) => {
+  if (tab.url && gmRegex.test(tab.url)) {
+    console.log("You are in a google meeting");
 
-function getCurrentUrl() {
-  //return window.location.href
-  console.log(window.location.href)//Esto no es posible e todas las paginas.
-  //console.log("Hola")
-}
+    //Esto va al contentScript
 
-
-chrome.tabs.onUpdated.addListener((tabID, tab) => {
-  console.log(tabID)
-  chrome.scripting.executeScript({
-    target : {tabId : tabID},
-    func : getCurrentUrl,//esta funcion se ejecutara cuando suceda el evento.
-  });
-
-
-
-
+    try {
+      chrome.tabs.sendMessage(tabId, {
+        type: "New Meet",
+        data: JSON.stringify(tab),
+      });
+    } catch (err) {
+      console.log(`Failed, Error: ${err.message}`);
+    }
+  } else {
+    console.log("This is not a google meet : /");
+  }
 });
-
 
 // chrome.runtime.onMessage.addListener(
 //   function(request, sender, sendResponse) {
@@ -113,15 +121,3 @@ chrome.tabs.onUpdated.addListener((tabID, tab) => {
 //       sendResponse({farewell: "goodbye"});
 //   }
 // );
-
-
-
-
-
-
-
-
-
-
-
-
