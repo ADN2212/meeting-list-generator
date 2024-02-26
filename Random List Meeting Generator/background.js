@@ -91,26 +91,63 @@
 //   });
 // });
 
-let gmRegex = /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}/;
+(function backgroundModule() {
 
-chrome.tabs.onUpdated.addListener((tabId, tab) => {
-  if (tab.url && gmRegex.test(tab.url)) {
-    console.log("You are in a google meeting");
+  console.log(`Hola desde el background at ${new Date().toLocaleString()}`)
 
-    //Esto va al contentScript
+  var gmRegex = /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}/;
 
-    try {
-      chrome.tabs.sendMessage(tabId, {
-        type: "New Meet",
-        data: JSON.stringify(tab),
-      });
-    } catch (err) {
-      console.log(`Failed, Error: ${err.message}`);
+  //Este listener solo esta activo cuando la extencion esta activa:
+  chrome.tabs.onUpdated.addListener((tabId, tab) => {
+    if (tab.url && gmRegex.test(tab.url)) {
+      console.log("You are in a google meeting");
+
+      //Esto va al contentScript
+
+      try {
+        chrome.tabs.sendMessage(tabId, {
+          type: "New Meet",
+          data: JSON.stringify(tab),
+        });
+      } catch (err) {
+        console.log(`Failed, Error: ${err.message}`);
+      }
+    } else {
+      console.log("This is not a google meet : /");
     }
-  } else {
-    console.log("This is not a google meet : /");
-  }
-});
+  });
+
+
+  var btn = document.getElementById("get-members-btn")
+	var list = document.getElementById("members-list")
+	var memberNum = 1
+
+	btn.addEventListener("click", () => {
+		
+    list.innerHTML += `<li> Member-${memberNum} from the bg </li>`
+		memberNum += 1
+    
+    
+  })
+
+  // chrome.browserAction.onClicked.addListener(function() {
+  //   console.log("Yei!!")
+  // });
+
+
+  // chrome.runtime.onMessage((obj, _sender, _response) =>{
+  //   console.log(obj)
+  // })
+
+
+  // chrome.webNavigation.onCompleted.addListener(function(details) {
+  //   // Este código se ejecutará cuando se haya completado la navegación a una nueva página.
+  //   console.log('Se ha completado la navegación en la pestaña ' + details.tabId);
+  // });
+
+
+
+})();
 
 // chrome.runtime.onMessage.addListener(
 //   function(request, sender, sendResponse) {

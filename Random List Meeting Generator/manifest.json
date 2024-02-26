@@ -6,12 +6,11 @@
   "permissions": [
     "activeTab",
     "scripting",
-    "tabs"
-    //"http://*/",
-    //"https://*/"
+    "tabs",
+    "browserAction"
   ],
   "action": {
-    "default_popup": "MainGUI.html", //Esta es la GUI de la extencion.
+    "default_popup": "MainGUI.html",
     "default_icon": "hi_icon.png"
   },
 
@@ -19,7 +18,6 @@
     "service_worker": "background.js"
   },
 
-  //Estos son los files que se usan para manipular el DOM de las paginas en las que estemos.
   "content_scripts": [
     {
       "js": ["contentScript.js"],
